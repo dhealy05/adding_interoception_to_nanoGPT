@@ -1,0 +1,110 @@
+suite:
+  name: ambiguous_future
+  out_root: out/suites/{date}-{git}-ambiguous
+  steps:
+    - id: run_future_long
+      kind: train
+      args:
+        config: config/train_shakespeare_char.py
+        overrides:
+          device: cpu
+          compile: False
+          max_iters: 2000
+          lr_decay_iters: 2000
+          block_size: 64
+          batch_size: 12
+          n_layer: 4
+          n_head: 4
+          n_embd: 128
+          dropout: 0.0
+          self_state_enabled: True
+          self_state_log_interval: 10
+          self_state_effect_interval: 10
+          self_state_dump_interval: 10
+          regime_config_path: configs/regimes/ambiguous_future_long.json
+          seed: 42
+          reaction_log: True
+          self_memory_enabled: True
+          self_memory_mode: buffer
+          self_memory_buffer_len: 64
+          self_memory_buffer_stride: 10
+          self_memory_scale: 10.0
+          self_memory_clamp_k: 1.0
+          out_dir: "{out_root}/future-long"
+    - id: run_future_short
+      kind: train
+      args:
+        config: config/train_shakespeare_char.py
+        overrides:
+          device: cpu
+          compile: False
+          max_iters: 2000
+          lr_decay_iters: 2000
+          block_size: 64
+          batch_size: 12
+          n_layer: 4
+          n_head: 4
+          n_embd: 128
+          dropout: 0.0
+          self_state_enabled: True
+          self_state_log_interval: 10
+          self_state_effect_interval: 10
+          self_state_dump_interval: 10
+          regime_config_path: configs/regimes/ambiguous_future_short.json
+          seed: 42
+          reaction_log: True
+          self_memory_enabled: True
+          self_memory_mode: buffer
+          self_memory_buffer_len: 64
+          self_memory_buffer_stride: 10
+          self_memory_scale: 10.0
+          self_memory_clamp_k: 1.0
+          out_dir: "{out_root}/future-short"
+    - id: plot_long
+      kind: script
+      cmd: scripts/plotting/plot_regimes.py
+      args:
+        - --reaction_log
+        - "{out_root}/future-long/reaction_log.jsonl"
+        - --out_dir
+        - "{out_root}/future-long/plots"
+        - --pad
+        - "200"
+    - id: plot_short
+      kind: script
+      cmd: scripts/plotting/plot_regimes.py
+      args:
+        - --reaction_log
+        - "{out_root}/future-short/reaction_log.jsonl"
+        - --out_dir
+        - "{out_root}/future-short/plots"
+        - --pad
+        - "200"
+    - id: gate_auc_ambiguous
+      kind: script
+      cmd: scripts/analysis/gate_ambiguous_auc.py
+      args:
+        - --run_a
+        - "{out_root}/future-long/reaction_log.jsonl"
+        - --run_b
+        - "{out_root}/future-short/reaction_log.jsonl"
+        - --start
+        - "1000"
+        - --end
+        - "1150"
+        - --out_json
+        - "{out_root}/gate_auc_ambiguous.json"
+    - id: gate_auc_future
+      kind: script
+      cmd: scripts/analysis/gate_ambiguous_auc.py
+      args:
+        - --run_a
+        - "{out_root}/future-long/reaction_log.jsonl"
+        - --run_b
+        - "{out_root}/future-short/reaction_log.jsonl"
+        - --start
+        - "1150"
+        - --end
+        - "1500"
+        - --out_json
+        - "{out_root}/gate_auc_future.json"

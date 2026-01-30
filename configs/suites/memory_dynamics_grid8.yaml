@@ -1,0 +1,374 @@
+suite:
+  name: memory_dynamics_grid8
+  out_root: out/suites/{date}-{git}-memory-grid8
+  steps:
+  - id: mem-decay-0.1_s5.0_k1.5
+    kind: train
+    args:
+      config: config/train_shakespeare_char.py
+      overrides:
+        device: cpu
+        compile: false
+        max_iters: 2000
+        lr_decay_iters: 2000
+        block_size: 64
+        batch_size: 12
+        n_layer: 4
+        n_head: 4
+        n_embd: 128
+        dropout: 0.0
+        self_state_enabled: true
+        self_state_log_interval: 10
+        self_state_effect_interval: 10
+        self_state_dump_interval: 10
+        regime_config_path: configs/regimes/bewilderment_1000_1500.json
+        seed: 42
+        reaction_log: true
+        self_memory_enabled: true
+        self_memory_decay: 0.1
+        self_memory_scale: 5.0
+        self_memory_clamp_k: 1.5
+        out_dir: '{out_root}/mem-decay-0.1_s5.0_k1.5'
+  - id: mem-decay-0.1_s5.0_k2.0
+    kind: train
+    args:
+      config: config/train_shakespeare_char.py
+      overrides:
+        device: cpu
+        compile: false
+        max_iters: 2000
+        lr_decay_iters: 2000
+        block_size: 64
+        batch_size: 12
+        n_layer: 4
+        n_head: 4
+        n_embd: 128
+        dropout: 0.0
+        self_state_enabled: true
+        self_state_log_interval: 10
+        self_state_effect_interval: 10
+        self_state_dump_interval: 10
+        regime_config_path: configs/regimes/bewilderment_1000_1500.json
+        seed: 42
+        reaction_log: true
+        self_memory_enabled: true
+        self_memory_decay: 0.1
+        self_memory_scale: 5.0
+        self_memory_clamp_k: 2.0
+        out_dir: '{out_root}/mem-decay-0.1_s5.0_k2.0'
+  - id: mem-decay-0.1_s10.0_k1.5
+    kind: train
+    args:
+      config: config/train_shakespeare_char.py
+      overrides:
+        device: cpu
+        compile: false
+        max_iters: 2000
+        lr_decay_iters: 2000
+        block_size: 64
+        batch_size: 12
+        n_layer: 4
+        n_head: 4
+        n_embd: 128
+        dropout: 0.0
+        self_state_enabled: true
+        self_state_log_interval: 10
+        self_state_effect_interval: 10
+        self_state_dump_interval: 10
+        regime_config_path: configs/regimes/bewilderment_1000_1500.json
+        seed: 42
+        reaction_log: true
+        self_memory_enabled: true
+        self_memory_decay: 0.1
+        self_memory_scale: 10.0
+        self_memory_clamp_k: 1.5
+        out_dir: '{out_root}/mem-decay-0.1_s10.0_k1.5'
+  - id: mem-decay-0.1_s10.0_k2.0
+    kind: train
+    args:
+      config: config/train_shakespeare_char.py
+      overrides:
+        device: cpu
+        compile: false
+        max_iters: 2000
+        lr_decay_iters: 2000
+        block_size: 64
+        batch_size: 12
+        n_layer: 4
+        n_head: 4
+        n_embd: 128
+        dropout: 0.0
+        self_state_enabled: true
+        self_state_log_interval: 10
+        self_state_effect_interval: 10
+        self_state_dump_interval: 10
+        regime_config_path: configs/regimes/bewilderment_1000_1500.json
+        seed: 42
+        reaction_log: true
+        self_memory_enabled: true
+        self_memory_decay: 0.1
+        self_memory_scale: 10.0
+        self_memory_clamp_k: 2.0
+        out_dir: '{out_root}/mem-decay-0.1_s10.0_k2.0'
+  - id: mem-decay-0.01_s5.0_k1.5
+    kind: train
+    args:
+      config: config/train_shakespeare_char.py
+      overrides:
+        device: cpu
+        compile: false
+        max_iters: 2000
+        lr_decay_iters: 2000
+        block_size: 64
+        batch_size: 12
+        n_layer: 4
+        n_head: 4
+        n_embd: 128
+        dropout: 0.0
+        self_state_enabled: true
+        self_state_log_interval: 10
+        self_state_effect_interval: 10
+        self_state_dump_interval: 10
+        regime_config_path: configs/regimes/bewilderment_1000_1500.json
+        seed: 42
+        reaction_log: true
+        self_memory_enabled: true
+        self_memory_decay: 0.01
+        self_memory_scale: 5.0
+        self_memory_clamp_k: 1.5
+        out_dir: '{out_root}/mem-decay-0.01_s5.0_k1.5'
+  - id: mem-decay-0.01_s5.0_k2.0
+    kind: train
+    args:
+      config: config/train_shakespeare_char.py
+      overrides:
+        device: cpu
+        compile: false
+        max_iters: 2000
+        lr_decay_iters: 2000
+        block_size: 64
+        batch_size: 12
+        n_layer: 4
+        n_head: 4
+        n_embd: 128
+        dropout: 0.0
+        self_state_enabled: true
+        self_state_log_interval: 10
+        self_state_effect_interval: 10
+        self_state_dump_interval: 10
+        regime_config_path: configs/regimes/bewilderment_1000_1500.json
+        seed: 42
+        reaction_log: true
+        self_memory_enabled: true
+        self_memory_decay: 0.01
+        self_memory_scale: 5.0
+        self_memory_clamp_k: 2.0
+        out_dir: '{out_root}/mem-decay-0.01_s5.0_k2.0'
+  - id: mem-decay-0.01_s10.0_k1.5
+    kind: train
+    args:
+      config: config/train_shakespeare_char.py
+      overrides:
+        device: cpu
+        compile: false
+        max_iters: 2000
+        lr_decay_iters: 2000
+        block_size: 64
+        batch_size: 12
+        n_layer: 4
+        n_head: 4
+        n_embd: 128
+        dropout: 0.0
+        self_state_enabled: true
+        self_state_log_interval: 10
+        self_state_effect_interval: 10
+        self_state_dump_interval: 10
+        regime_config_path: configs/regimes/bewilderment_1000_1500.json
+        seed: 42
+        reaction_log: true
+        self_memory_enabled: true
+        self_memory_decay: 0.01
+        self_memory_scale: 10.0
+        self_memory_clamp_k: 1.5
+        out_dir: '{out_root}/mem-decay-0.01_s10.0_k1.5'
+  - id: mem-decay-0.01_s10.0_k2.0
+    kind: train
+    args:
+      config: config/train_shakespeare_char.py
+      overrides:
+        device: cpu
+        compile: false
+        max_iters: 2000
+        lr_decay_iters: 2000
+        block_size: 64
+        batch_size: 12
+        n_layer: 4
+        n_head: 4
+        n_embd: 128
+        dropout: 0.0
+        self_state_enabled: true
+        self_state_log_interval: 10
+        self_state_effect_interval: 10
+        self_state_dump_interval: 10
+        regime_config_path: configs/regimes/bewilderment_1000_1500.json
+        seed: 42
+        reaction_log: true
+        self_memory_enabled: true
+        self_memory_decay: 0.01
+        self_memory_scale: 10.0
+        self_memory_clamp_k: 2.0
+        out_dir: '{out_root}/mem-decay-0.01_s10.0_k2.0'
+  - id: delta_mem-decay-0.1_s5.0_k1.5
+    kind: script
+    cmd: scripts/analysis/regime_delta_summary.py
+    args:
+    - --reaction_log
+    - '{out_root}/mem-decay-0.1_s5.0_k1.5/reaction_log.jsonl'
+    - --out_csv
+    - '{out_root}/mem-decay-0.1_s5.0_k1.5/regime_deltas.csv'
+  - id: delta_mem-decay-0.1_s5.0_k2.0
+    kind: script
+    cmd: scripts/analysis/regime_delta_summary.py
+    args:
+    - --reaction_log
+    - '{out_root}/mem-decay-0.1_s5.0_k2.0/reaction_log.jsonl'
+    - --out_csv
+    - '{out_root}/mem-decay-0.1_s5.0_k2.0/regime_deltas.csv'
+  - id: delta_mem-decay-0.1_s10.0_k1.5
+    kind: script
+    cmd: scripts/analysis/regime_delta_summary.py
+    args:
+    - --reaction_log
+    - '{out_root}/mem-decay-0.1_s10.0_k1.5/reaction_log.jsonl'
+    - --out_csv
+    - '{out_root}/mem-decay-0.1_s10.0_k1.5/regime_deltas.csv'
+  - id: delta_mem-decay-0.1_s10.0_k2.0
+    kind: script
+    cmd: scripts/analysis/regime_delta_summary.py
+    args:
+    - --reaction_log
+    - '{out_root}/mem-decay-0.1_s10.0_k2.0/reaction_log.jsonl'
+    - --out_csv
+    - '{out_root}/mem-decay-0.1_s10.0_k2.0/regime_deltas.csv'
+  - id: delta_mem-decay-0.01_s5.0_k1.5
+    kind: script
+    cmd: scripts/analysis/regime_delta_summary.py
+    args:
+    - --reaction_log
+    - '{out_root}/mem-decay-0.01_s5.0_k1.5/reaction_log.jsonl'
+    - --out_csv
+    - '{out_root}/mem-decay-0.01_s5.0_k1.5/regime_deltas.csv'
+  - id: delta_mem-decay-0.01_s5.0_k2.0
+    kind: script
+    cmd: scripts/analysis/regime_delta_summary.py
+    args:
+    - --reaction_log
+    - '{out_root}/mem-decay-0.01_s5.0_k2.0/reaction_log.jsonl'
+    - --out_csv
+    - '{out_root}/mem-decay-0.01_s5.0_k2.0/regime_deltas.csv'
+  - id: delta_mem-decay-0.01_s10.0_k1.5
+    kind: script
+    cmd: scripts/analysis/regime_delta_summary.py
+    args:
+    - --reaction_log
+    - '{out_root}/mem-decay-0.01_s10.0_k1.5/reaction_log.jsonl'
+    - --out_csv
+    - '{out_root}/mem-decay-0.01_s10.0_k1.5/regime_deltas.csv'
+  - id: delta_mem-decay-0.01_s10.0_k2.0
+    kind: script
+    cmd: scripts/analysis/regime_delta_summary.py
+    args:
+    - --reaction_log
+    - '{out_root}/mem-decay-0.01_s10.0_k2.0/reaction_log.jsonl'
+    - --out_csv
+    - '{out_root}/mem-decay-0.01_s10.0_k2.0/regime_deltas.csv'
+  - id: plot_mem-decay-0.1_s5.0_k1.5
+    kind: script
+    cmd: scripts/plotting/plot_regimes.py
+    args:
+    - --reaction_log
+    - '{out_root}/mem-decay-0.1_s5.0_k1.5/reaction_log.jsonl'
+    - --out_dir
+    - '{out_root}/mem-decay-0.1_s5.0_k1.5/plots'
+    - --pad
+    - '200'
+  - id: plot_mem-decay-0.1_s5.0_k2.0
+    kind: script
+    cmd: scripts/plotting/plot_regimes.py
+    args:
+    - --reaction_log
+    - '{out_root}/mem-decay-0.1_s5.0_k2.0/reaction_log.jsonl'
+    - --out_dir
+    - '{out_root}/mem-decay-0.1_s5.0_k2.0/plots'
+    - --pad
+    - '200'
+  - id: plot_mem-decay-0.1_s10.0_k1.5
+    kind: script
+    cmd: scripts/plotting/plot_regimes.py
+    args:
+    - --reaction_log
+    - '{out_root}/mem-decay-0.1_s10.0_k1.5/reaction_log.jsonl'
+    - --out_dir
+    - '{out_root}/mem-decay-0.1_s10.0_k1.5/plots'
+    - --pad
+    - '200'
+  - id: plot_mem-decay-0.1_s10.0_k2.0
+    kind: script
+    cmd: scripts/plotting/plot_regimes.py
+    args:
+    - --reaction_log
+    - '{out_root}/mem-decay-0.1_s10.0_k2.0/reaction_log.jsonl'
+    - --out_dir
+    - '{out_root}/mem-decay-0.1_s10.0_k2.0/plots'
+    - --pad
+    - '200'
+  - id: plot_mem-decay-0.01_s5.0_k1.5
+    kind: script
+    cmd: scripts/plotting/plot_regimes.py
+    args:
+    - --reaction_log
+    - '{out_root}/mem-decay-0.01_s5.0_k1.5/reaction_log.jsonl'
+    - --out_dir
+    - '{out_root}/mem-decay-0.01_s5.0_k1.5/plots'
+    - --pad
+    - '200'
+  - id: plot_mem-decay-0.01_s5.0_k2.0
+    kind: script
+    cmd: scripts/plotting/plot_regimes.py
+    args:
+    - --reaction_log
+    - '{out_root}/mem-decay-0.01_s5.0_k2.0/reaction_log.jsonl'
+    - --out_dir
+    - '{out_root}/mem-decay-0.01_s5.0_k2.0/plots'
+    - --pad
+    - '200'
+  - id: plot_mem-decay-0.01_s10.0_k1.5
+    kind: script
+    cmd: scripts/plotting/plot_regimes.py
+    args:
+    - --reaction_log
+    - '{out_root}/mem-decay-0.01_s10.0_k1.5/reaction_log.jsonl'
+    - --out_dir
+    - '{out_root}/mem-decay-0.01_s10.0_k1.5/plots'
+    - --pad
+    - '200'
+  - id: plot_mem-decay-0.01_s10.0_k2.0
+    kind: script
+    cmd: scripts/plotting/plot_regimes.py
+    args:
+    - --reaction_log
+    - '{out_root}/mem-decay-0.01_s10.0_k2.0/reaction_log.jsonl'
+    - --out_dir
+    - '{out_root}/mem-decay-0.01_s10.0_k2.0/plots'
+    - --pad
+    - '200'
+  - id: memory_summary
+    kind: script
+    cmd: scripts/analysis/memory_decay_summary.py
+    args:
+    - --out_root
+    - '{out_root}'
+    - --out_csv
+    - '{out_root}/memory_decay_summary.csv'
+    - --plot
+    - '{out_root}/memory_decay_summary.png'

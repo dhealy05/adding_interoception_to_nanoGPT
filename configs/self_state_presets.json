@@ -1,0 +1,196 @@
+{
+  "defaults": {
+    "base": "checkpoint",
+    "clip": "minmax"
+  },
+  "presets": {
+    "confident": {
+      "ops": [
+        {
+          "op": "set",
+          "dims": [
+            14,
+            19,
+            27
+          ],
+          "value": "max"
+        },
+        {
+          "op": "set",
+          "dims": [
+            23,
+            24
+          ],
+          "value": "min"
+        }
+      ]
+    },
+    "uncertain": {
+      "ops": [
+        {
+          "op": "set",
+          "dims": [
+            14,
+            19,
+            27
+          ],
+          "value": "min"
+        },
+        {
+          "op": "set",
+          "dims": [
+            23,
+            24
+          ],
+          "value": "max"
+        }
+      ]
+    },
+    "calm_small": {
+      "ops": [
+        {
+          "op": "add",
+          "dims": [
+            14,
+            19
+          ],
+          "value": 0.5
+        },
+        {
+          "op": "add",
+          "dims": [
+            23,
+            24
+          ],
+          "value": -0.5
+        }
+      ]
+    },
+    "flat_zero": {
+      "ops": [
+        {
+          "op": "set_all",
+          "value": 0.0
+        }
+      ]
+    },
+    "confident_extreme": {
+      "ops": [
+        {
+          "op": "set",
+          "dims": [
+            14,
+            19,
+            27
+          ],
+          "value": "max"
+        },
+        {
+          "op": "set",
+          "dims": [
+            23,
+            24
+          ],
+          "value": "min"
+        },
+        {
+          "op": "scale",
+          "dims": [
+            14,
+            19,
+            27
+          ],
+          "value": 1.5
+        },
+        {
+          "op": "scale",
+          "dims": [
+            23,
+            24
+          ],
+          "value": 1.5
+        }
+      ]
+    },
+    "uncertain_extreme": {
+      "ops": [
+        {
+          "op": "set",
+          "dims": [
+            14,
+            19,
+            27
+          ],
+          "value": "min"
+        },
+        {
+          "op": "set",
+          "dims": [
+            23,
+            24
+          ],
+          "value": "max"
+        },
+        {
+          "op": "scale",
+          "dims": [
+            14,
+            19,
+            27
+          ],
+          "value": 1.5
+        },
+        {
+          "op": "scale",
+          "dims": [
+            23,
+            24
+          ],
+          "value": 1.5
+        }
+      ]
+    },
+    "confident_add": {
+      "ops": [
+        {
+          "op": "add",
+          "dims": [
+            14,
+            19,
+            27
+          ],
+          "value": 0.05
+        },
+        {
+          "op": "add",
+          "dims": [
+            23,
+            24
+          ],
+          "value": -0.05
+        }
+      ]
+    },
+    "uncertain_add": {
+      "ops": [
+        {
+          "op": "add",
+          "dims": [
+            14,
+            19,
+            27
+          ],
+          "value": -0.05
+        },
+        {
+          "op": "add",
+          "dims": [
+            23,
+            24
+          ],
+          "value": 0.05
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,295 @@
+suite:
+  name: memory_buffer_grid
+  out_root: out/suites/{date}-{git}-memory-buffer
+  steps:
+    - id: mem-ema-decay-0.1_s10_k1
+      kind: train
+      args:
+        config: config/train_shakespeare_char.py
+        overrides:
+          device: cpu
+          compile: False
+          max_iters: 2000
+          lr_decay_iters: 2000
+          block_size: 64
+          batch_size: 12
+          n_layer: 4
+          n_head: 4
+          n_embd: 128
+          dropout: 0.0
+          self_state_enabled: True
+          self_state_log_interval: 10
+          self_state_effect_interval: 10
+          self_state_dump_interval: 10
+          regime_config_path: configs/regimes/bewilderment_1000_1500.json
+          seed: 42
+          reaction_log: True
+          self_memory_enabled: True
+          self_memory_scale: 10.0
+          self_memory_clamp_k: 1.0
+          self_memory_mode: ema
+          self_memory_decay: 0.1
+          out_dir: "{out_root}/mem-ema-decay-0.1_s10_k1"
+    - id: mem-buf-l32_s10
+      kind: train
+      args:
+        config: config/train_shakespeare_char.py
+        overrides:
+          device: cpu
+          compile: False
+          max_iters: 2000
+          lr_decay_iters: 2000
+          block_size: 64
+          batch_size: 12
+          n_layer: 4
+          n_head: 4
+          n_embd: 128
+          dropout: 0.0
+          self_state_enabled: True
+          self_state_log_interval: 10
+          self_state_effect_interval: 10
+          self_state_dump_interval: 10
+          regime_config_path: configs/regimes/bewilderment_1000_1500.json
+          seed: 42
+          reaction_log: True
+          self_memory_enabled: True
+          self_memory_scale: 10.0
+          self_memory_clamp_k: 1.0
+          self_memory_mode: buffer
+          self_memory_buffer_len: 32
+          self_memory_buffer_stride: 10
+          out_dir: "{out_root}/mem-buf-l32_s10"
+    - id: mem-buf-l64_s10
+      kind: train
+      args:
+        config: config/train_shakespeare_char.py
+        overrides:
+          device: cpu
+          compile: False
+          max_iters: 2000
+          lr_decay_iters: 2000
+          block_size: 64
+          batch_size: 12
+          n_layer: 4
+          n_head: 4
+          n_embd: 128
+          dropout: 0.0
+          self_state_enabled: True
+          self_state_log_interval: 10
+          self_state_effect_interval: 10
+          self_state_dump_interval: 10
+          regime_config_path: configs/regimes/bewilderment_1000_1500.json
+          seed: 42
+          reaction_log: True
+          self_memory_enabled: True
+          self_memory_scale: 10.0
+          self_memory_clamp_k: 1.0
+          self_memory_mode: buffer
+          self_memory_buffer_len: 64
+          self_memory_buffer_stride: 10
+          out_dir: "{out_root}/mem-buf-l64_s10"
+    - id: mem-buf-l128_s10
+      kind: train
+      args:
+        config: config/train_shakespeare_char.py
+        overrides:
+          device: cpu
+          compile: False
+          max_iters: 2000
+          lr_decay_iters: 2000
+          block_size: 64
+          batch_size: 12
+          n_layer: 4
+          n_head: 4
+          n_embd: 128
+          dropout: 0.0
+          self_state_enabled: True
+          self_state_log_interval: 10
+          self_state_effect_interval: 10
+          self_state_dump_interval: 10
+          regime_config_path: configs/regimes/bewilderment_1000_1500.json
+          seed: 42
+          reaction_log: True
+          self_memory_enabled: True
+          self_memory_scale: 10.0
+          self_memory_clamp_k: 1.0
+          self_memory_mode: buffer
+          self_memory_buffer_len: 128
+          self_memory_buffer_stride: 10
+          out_dir: "{out_root}/mem-buf-l128_s10"
+    - id: mem-buf-l64_s5
+      kind: train
+      args:
+        config: config/train_shakespeare_char.py
+        overrides:
+          device: cpu
+          compile: False
+          max_iters: 2000
+          lr_decay_iters: 2000
+          block_size: 64
+          batch_size: 12
+          n_layer: 4
+          n_head: 4
+          n_embd: 128
+          dropout: 0.0
+          self_state_enabled: True
+          self_state_log_interval: 10
+          self_state_effect_interval: 10
+          self_state_dump_interval: 10
+          regime_config_path: configs/regimes/bewilderment_1000_1500.json
+          seed: 42
+          reaction_log: True
+          self_memory_enabled: True
+          self_memory_scale: 10.0
+          self_memory_clamp_k: 1.0
+          self_memory_mode: buffer
+          self_memory_buffer_len: 64
+          self_memory_buffer_stride: 5
+          out_dir: "{out_root}/mem-buf-l64_s5"
+    - id: mem-buf-l64_s20
+      kind: train
+      args:
+        config: config/train_shakespeare_char.py
+        overrides:
+          device: cpu
+          compile: False
+          max_iters: 2000
+          lr_decay_iters: 2000
+          block_size: 64
+          batch_size: 12
+          n_layer: 4
+          n_head: 4
+          n_embd: 128
+          dropout: 0.0
+          self_state_enabled: True
+          self_state_log_interval: 10
+          self_state_effect_interval: 10
+          self_state_dump_interval: 10
+          regime_config_path: configs/regimes/bewilderment_1000_1500.json
+          seed: 42
+          reaction_log: True
+          self_memory_enabled: True
+          self_memory_scale: 10.0
+          self_memory_clamp_k: 1.0
+          self_memory_mode: buffer
+          self_memory_buffer_len: 64
+          self_memory_buffer_stride: 20
+          out_dir: "{out_root}/mem-buf-l64_s20"
+    - id: delta_mem-ema-decay-0.1_s10_k1
+      kind: script
+      cmd: scripts/analysis/regime_delta_summary.py
+      args:
+        - --reaction_log
+        - "{out_root}/mem-ema-decay-0.1_s10_k1/reaction_log.jsonl"
+        - --out_csv
+        - "{out_root}/mem-ema-decay-0.1_s10_k1/regime_deltas.csv"
+    - id: plot_mem-ema-decay-0.1_s10_k1
+      kind: script
+      cmd: scripts/plotting/plot_regimes.py
+      args:
+        - --reaction_log
+        - "{out_root}/mem-ema-decay-0.1_s10_k1/reaction_log.jsonl"
+        - --out_dir
+        - "{out_root}/mem-ema-decay-0.1_s10_k1/plots"
+        - --pad
+        - "200"
+    - id: delta_mem-buf-l32_s10
+      kind: script
+      cmd: scripts/analysis/regime_delta_summary.py
+      args:
+        - --reaction_log
+        - "{out_root}/mem-buf-l32_s10/reaction_log.jsonl"
+        - --out_csv
+        - "{out_root}/mem-buf-l32_s10/regime_deltas.csv"
+    - id: plot_mem-buf-l32_s10
+      kind: script
+      cmd: scripts/plotting/plot_regimes.py
+      args:
+        - --reaction_log
+        - "{out_root}/mem-buf-l32_s10/reaction_log.jsonl"
+        - --out_dir
+        - "{out_root}/mem-buf-l32_s10/plots"
+        - --pad
+        - "200"
+    - id: delta_mem-buf-l64_s10
+      kind: script
+      cmd: scripts/analysis/regime_delta_summary.py
+      args:
+        - --reaction_log
+        - "{out_root}/mem-buf-l64_s10/reaction_log.jsonl"
+        - --out_csv
+        - "{out_root}/mem-buf-l64_s10/regime_deltas.csv"
+    - id: plot_mem-buf-l64_s10
+      kind: script
+      cmd: scripts/plotting/plot_regimes.py
+      args:
+        - --reaction_log
+        - "{out_root}/mem-buf-l64_s10/reaction_log.jsonl"
+        - --out_dir
+        - "{out_root}/mem-buf-l64_s10/plots"
+        - --pad
+        - "200"
+    - id: delta_mem-buf-l128_s10
+      kind: script
+      cmd: scripts/analysis/regime_delta_summary.py
+      args:
+        - --reaction_log
+        - "{out_root}/mem-buf-l128_s10/reaction_log.jsonl"
+        - --out_csv
+        - "{out_root}/mem-buf-l128_s10/regime_deltas.csv"
+    - id: plot_mem-buf-l128_s10
+      kind: script
+      cmd: scripts/plotting/plot_regimes.py
+      args:
+        - --reaction_log
+        - "{out_root}/mem-buf-l128_s10/reaction_log.jsonl"
+        - --out_dir
+        - "{out_root}/mem-buf-l128_s10/plots"
+        - --pad
+        - "200"
+    - id: delta_mem-buf-l64_s5
+      kind: script
+      cmd: scripts/analysis/regime_delta_summary.py
+      args:
+        - --reaction_log
+        - "{out_root}/mem-buf-l64_s5/reaction_log.jsonl"
+        - --out_csv
+        - "{out_root}/mem-buf-l64_s5/regime_deltas.csv"
+    - id: plot_mem-buf-l64_s5
+      kind: script
+      cmd: scripts/plotting/plot_regimes.py
+      args:
+        - --reaction_log
+        - "{out_root}/mem-buf-l64_s5/reaction_log.jsonl"
+        - --out_dir
+        - "{out_root}/mem-buf-l64_s5/plots"
+        - --pad
+        - "200"
+    - id: delta_mem-buf-l64_s20
+      kind: script
+      cmd: scripts/analysis/regime_delta_summary.py
+      args:
+        - --reaction_log
+        - "{out_root}/mem-buf-l64_s20/reaction_log.jsonl"
+        - --out_csv
+        - "{out_root}/mem-buf-l64_s20/regime_deltas.csv"
+    - id: plot_mem-buf-l64_s20
+      kind: script
+      cmd: scripts/plotting/plot_regimes.py
+      args:
+        - --reaction_log
+        - "{out_root}/mem-buf-l64_s20/reaction_log.jsonl"
+        - --out_dir
+        - "{out_root}/mem-buf-l64_s20/plots"
+        - --pad
+        - "200"
+    - id: memory_summary
+      kind: script
+      cmd: scripts/analysis/memory_buffer_summary.py
+      args:
+        - --out_root
+        - "{out_root}"
+        - --out_csv
+        - "{out_root}/memory_buffer_summary.csv"
+        - --plot
+        - "{out_root}/memory_buffer_summary.png"

@@ -1,0 +1,44 @@
+{
+  "regimes": [
+    {
+      "id": "sensory_fog",
+      "start": 600,
+      "end": 800,
+      "intensity": 0.2,
+      "channels": ["input"],
+      "params": {"mode": "mask_tokens", "mask_id": 0}
+    },
+    {
+      "id": "bewilderment",
+      "start": 1200,
+      "end": 1400,
+      "intensity": 0.5,
+      "channels": ["target"],
+      "params": {"mode": "random_targets"}
+    },
+    {
+      "id": "false_feedback",
+      "start": 900,
+      "end": 1000,
+      "intensity": 1.0,
+      "channels": ["stats"],
+      "params": {"mode": "bias", "loss_bias": 0.5}
+    },
+    {
+      "id": "self_clamp",
+      "start": 1100,
+      "end": 1200,
+      "intensity": 1.0,
+      "channels": ["self"],
+      "params": {"mode": "clamp", "min": -0.01, "max": 0.01}
+    },
+    {
+      "id": "lr_heatwave",
+      "start": 300,
+      "end": 350,
+      "intensity": 2.0,
+      "channels": ["optim"],
+      "params": {"mode": "lr_mult", "mult": 2.0}
+    }
+  ]
+}

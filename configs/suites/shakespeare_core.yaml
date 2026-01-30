@@ -1,0 +1,354 @@
+suite:
+  name: shakespeare_core
+  out_root: out/suites/{date}-{git}
+  steps:
+    - id: self_analysis
+      kind: train
+      args:
+        config: config/train_shakespeare_char.py
+        overrides:
+          device: cpu
+          compile: False
+          block_size: 64
+          batch_size: 12
+          n_layer: 4
+          n_head: 4
+          n_embd: 128
+          max_iters: 1000
+          lr_decay_iters: 2000
+          dropout: 0.0
+          self_state_enabled: True
+          self_state_dump_interval: 10
+          out_dir: "{out_root}/self-analysis"
+          seed: 42
+          reaction_log: True
+    - id: self_analysis_noself
+      kind: train
+      args:
+        config: config/train_shakespeare_char.py
+        overrides:
+          device: cpu
+          compile: False
+          block_size: 64
+          batch_size: 12
+          n_layer: 4
+          n_head: 4
+          n_embd: 128
+          max_iters: 1000
+          lr_decay_iters: 2000
+          dropout: 0.0
+          self_state_enabled: False
+          out_dir: "{out_root}/self-analysis-noself"
+          seed: 42
+    - id: analysis
+      kind: script
+      cmd: scripts/analysis/self_state_analysis.py
+      args:
+        - --out_dir
+        - "{out_root}/self-analysis"
+        - --ckpt
+        - "{out_root}/self-analysis/ckpt.pt"
+    - id: patch
+      kind: train
+      args:
+        config: config/train_shakespeare_char.py
+        overrides:
+          device: cpu
+          compile: False
+          max_iters: 2000
+          lr_decay_iters: 2000
+          block_size: 64
+          batch_size: 12
+          n_layer: 4
+          n_head: 4
+          n_embd: 128
+          self_state_enabled: True
+          self_state_log_interval: 10
+          self_state_effect_interval: 50
+          self_state_dump_interval: 10
+          bewilderment_patch: True
+          bewilderment_patch_start: 1200
+          bewilderment_patch_end: 1400
+          out_dir: "{out_root}/shakespeare-char-patch"
+          reaction_log: True
+    - id: baseline
+      kind: train
+      args:
+        config: config/train_shakespeare_char.py
+        overrides:
+          device: cpu
+          compile: False
+          max_iters: 2000
+          lr_decay_iters: 2000
+          block_size: 64
+          batch_size: 12
+          n_layer: 4
+          n_head: 4
+          n_embd: 128
+          self_state_enabled: True
+          self_state_log_interval: 10
+          self_state_effect_interval: 50
+          self_state_dump_interval: 10
+          bewilderment_patch: False
+          out_dir: "{out_root}/shakespeare-char-baseline"
+          reaction_log: True
+    - id: regimes_all
+      kind: train
+      args:
+        config: config/train_shakespeare_char.py
+        overrides:
+          device: cpu
+          compile: False
+          max_iters: 2000
+          lr_decay_iters: 2000
+          block_size: 64
+          batch_size: 12
+          n_layer: 4
+          n_head: 4
+          n_embd: 128
+          self_state_enabled: True
+          self_state_log_interval: 10
+          self_state_effect_interval: 50
+          self_state_dump_interval: 10
+          regime_config_path: configs/regimes/all_examples.json
+          out_dir: "{out_root}/regimes-all"
+          seed: 42
+          reaction_log: True
+    - id: plot_regimes
+      kind: script
+      cmd: scripts/plotting/plot_regimes.py
+      args:
+        - --reaction_log
+        - "{out_root}/regimes-all/reaction_log.jsonl"
+        - --out_dir
+        - "{out_root}/regimes-all/plots"
+    - id: desmotic_patch
+      kind: script
+      cmd: scripts/plotting/composite_metrics.py
+      args:
+        - --run_dir
+        - "{out_root}/shakespeare-char-patch"
+        - --patch_start
+        - "1200"
+        - --patch_end
+        - "1400"
+        - --baseline_end
+        - "1200"
+        - --intensity_scale
+        - "0.5"
+    - id: desmotic_regimes
+      kind: script
+      cmd: scripts/plotting/composite_metrics.py
+      args:
+        - --run_dir
+        - "{out_root}/regimes-all"
+        - --baseline_end
+        - "300"
+        - --local_baseline_len
+        - "20"
+        - --intensity_scale
+        - "0.5"
+    - id: build_confident
+      kind: script
+      cmd: scripts/build/build_self_state.py
+      args:
+        - --ckpt
+        - "{out_root}/self-analysis/ckpt.pt"
+        - --dump_dir
+        - "{out_root}/self-analysis"
+        - --config
+        - configs/self_state_presets.json
+        - --preset
+        - confident
+        - --out
+        - "{out_root}/self-analysis/self_state_confident.pt"
+    - id: eval_confident
+      kind: script
+      cmd: scripts/analysis/eval_self_state.py
+      args:
+        - --ckpt
+        - "{out_root}/self-analysis/ckpt.pt"
+        - --state
+        - "{out_root}/self-analysis/self_state_confident.pt"
+        - --dataset
+        - shakespeare_char
+    - id: build_uncertain
+      kind: script
+      cmd: scripts/build/build_self_state.py
+      args:
+        - --ckpt
+        - "{out_root}/self-analysis/ckpt.pt"
+        - --dump_dir
+        - "{out_root}/self-analysis"
+        - --config
+        - configs/self_state_presets.json
+        - --preset
+        - uncertain
+        - --out
+        - "{out_root}/self-analysis/self_state_uncertain.pt"
+    - id: eval_uncertain
+      kind: script
+      cmd: scripts/analysis/eval_self_state.py
+      args:
+        - --ckpt
+        - "{out_root}/self-analysis/ckpt.pt"
+        - --state
+        - "{out_root}/self-analysis/self_state_uncertain.pt"
+        - --dataset
+        - shakespeare_char
+    - id: swap_a
+      kind: train
+      args:
+        config: config/train_shakespeare_char.py
+        overrides:
+          device: cpu
+          compile: False
+          max_iters: 1000
+          lr_decay_iters: 2000
+          block_size: 64
+          batch_size: 12
+          n_layer: 4
+          n_head: 4
+          n_embd: 128
+          self_state_enabled: True
+          self_state_log_interval: 10
+          self_state_effect_interval: 50
+          out_dir: "{out_root}/swap-a"
+          seed: 1
+          reaction_log: True
+    - id: swap_b
+      kind: train
+      args:
+        config: config/train_shakespeare_char.py
+        overrides:
+          device: cpu
+          compile: False
+          max_iters: 1000
+          lr_decay_iters: 2000
+          block_size: 64
+          batch_size: 12
+          n_layer: 4
+          n_head: 4
+          n_embd: 128
+          self_state_enabled: True
+          self_state_log_interval: 10
+          self_state_effect_interval: 50
+          out_dir: "{out_root}/swap-b"
+          seed: 2
+          reaction_log: True
+    - id: swap_states
+      kind: script
+      cmd: scripts/build/swap_self_state.py
+      args:
+        - --ckpt_a
+        - "{out_root}/swap-a/ckpt.pt"
+        - --ckpt_b
+        - "{out_root}/swap-b/ckpt.pt"
+        - --out_a
+        - "{out_root}/swap-a-swapped"
+        - --out_b
+        - "{out_root}/swap-b-swapped"
+    - id: swap_a_continued
+      kind: train
+      args:
+        config: config/train_shakespeare_char.py
+        overrides:
+          init_from: resume
+          device: cpu
+          compile: False
+          max_iters: 2000
+          lr_decay_iters: 2000
+          block_size: 64
+          batch_size: 12
+          n_layer: 4
+          n_head: 4
+          n_embd: 128
+          self_state_enabled: True
+          self_state_log_interval: 10
+          self_state_effect_interval: 50
+          out_dir: "{out_root}/swap-a"
+          reaction_log: True
+    - id: swap_b_continued
+      kind: train
+      args:
+        config: config/train_shakespeare_char.py
+        overrides:
+          init_from: resume
+          device: cpu
+          compile: False
+          max_iters: 2000
+          lr_decay_iters: 2000
+          block_size: 64
+          batch_size: 12
+          n_layer: 4
+          n_head: 4
+          n_embd: 128
+          self_state_enabled: True
+          self_state_log_interval: 10
+          self_state_effect_interval: 50
+          out_dir: "{out_root}/swap-b"
+          reaction_log: True
+    - id: swap_a_swapped
+      kind: train
+      args:
+        config: config/train_shakespeare_char.py
+        overrides:
+          init_from: resume
+          device: cpu
+          compile: False
+          max_iters: 2000
+          lr_decay_iters: 2000
+          block_size: 64
+          batch_size: 12
+          n_layer: 4
+          n_head: 4
+          n_embd: 128
+          self_state_enabled: True
+          self_state_log_interval: 10
+          self_state_effect_interval: 50
+          out_dir: "{out_root}/swap-a-swapped"
+          reaction_log: True
+    - id: swap_b_swapped
+      kind: train
+      args:
+        config: config/train_shakespeare_char.py
+        overrides:
+          init_from: resume
+          device: cpu
+          compile: False
+          max_iters: 2000
+          lr_decay_iters: 2000
+          block_size: 64
+          batch_size: 12
+          n_layer: 4
+          n_head: 4
+          n_embd: 128
+          self_state_enabled: True
+          self_state_log_interval: 10
+          self_state_effect_interval: 50
+          out_dir: "{out_root}/swap-b-swapped"
+          reaction_log: True
+    - id: plots
+      kind: script
+      cmd: scripts/plotting/plot_suite.py
+      args:
+        - --out_root
+        - "{out_root}"
+        - --patch_start
+        - "1200"
+        - --patch_end
+        - "1400"
+        - --swap_step
+        - "1000"
+    - id: report
+      kind: script
+      cmd: scripts/orchestration/make_report.py
+      args:
+        - --out_root
+        - "{out_root}"
+        - --swap_step
+        - "1000"
+        - --swap_window
+        - "100"
+        - --regimes_out_dir
+        - "{out_root}/regimes-all"

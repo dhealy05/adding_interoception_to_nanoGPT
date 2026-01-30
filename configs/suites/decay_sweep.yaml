@@ -1,0 +1,154 @@
+suite:
+  name: decay_sweep
+  out_root: out/suites/{date}-{git}-decay
+  steps:
+    - id: decay_0_05
+      kind: train
+      args:
+        config: config/train_shakespeare_char.py
+        overrides:
+          device: cpu
+          compile: False
+          max_iters: 2000
+          lr_decay_iters: 2000
+          block_size: 64
+          batch_size: 12
+          n_layer: 4
+          n_head: 4
+          n_embd: 128
+          dropout: 0.0
+          self_state_enabled: True
+          self_state_decay: 0.05
+          self_state_log_interval: 10
+          self_state_effect_interval: 50
+          regime_config_path: configs/regimes/all_examples.json
+          out_dir: "{out_root}/decay-0.05"
+          seed: 42
+          reaction_log: True
+    - id: decay_0_20
+      kind: train
+      args:
+        config: config/train_shakespeare_char.py
+        overrides:
+          device: cpu
+          compile: False
+          max_iters: 2000
+          lr_decay_iters: 2000
+          block_size: 64
+          batch_size: 12
+          n_layer: 4
+          n_head: 4
+          n_embd: 128
+          dropout: 0.0
+          self_state_enabled: True
+          self_state_decay: 0.20
+          self_state_log_interval: 10
+          self_state_effect_interval: 50
+          regime_config_path: configs/regimes/all_examples.json
+          out_dir: "{out_root}/decay-0.20"
+          seed: 42
+          reaction_log: True
+    - id: decay_0_50
+      kind: train
+      args:
+        config: config/train_shakespeare_char.py
+        overrides:
+          device: cpu
+          compile: False
+          max_iters: 2000
+          lr_decay_iters: 2000
+          block_size: 64
+          batch_size: 12
+          n_layer: 4
+          n_head: 4
+          n_embd: 128
+          dropout: 0.0
+          self_state_enabled: True
+          self_state_decay: 0.50
+          self_state_log_interval: 10
+          self_state_effect_interval: 50
+          regime_config_path: configs/regimes/all_examples.json
+          out_dir: "{out_root}/decay-0.50"
+          seed: 42
+          reaction_log: True
+    - id: decay_0_80
+      kind: train
+      args:
+        config: config/train_shakespeare_char.py
+        overrides:
+          device: cpu
+          compile: False
+          max_iters: 2000
+          lr_decay_iters: 2000
+          block_size: 64
+          batch_size: 12
+          n_layer: 4
+          n_head: 4
+          n_embd: 128
+          dropout: 0.0
+          self_state_enabled: True
+          self_state_decay: 0.80
+          self_state_log_interval: 10
+          self_state_effect_interval: 50
+          regime_config_path: configs/regimes/all_examples.json
+          out_dir: "{out_root}/decay-0.80"
+          seed: 42
+          reaction_log: True
+    - id: delta_0_05
+      kind: script
+      cmd: scripts/analysis/regime_delta_summary.py
+      args:
+        - --reaction_log
+        - "{out_root}/decay-0.05/reaction_log.jsonl"
+        - --out_csv
+        - "{out_root}/decay-0.05/regime_deltas.csv"
+        - --plot
+        - "{out_root}/decay-0.05/regime_delta_scatter.png"
+        - --title
+        - "decay_0.05 (retention 0.95)"
+    - id: delta_0_20
+      kind: script
+      cmd: scripts/analysis/regime_delta_summary.py
+      args:
+        - --reaction_log
+        - "{out_root}/decay-0.20/reaction_log.jsonl"
+        - --out_csv
+        - "{out_root}/decay-0.20/regime_deltas.csv"
+        - --plot
+        - "{out_root}/decay-0.20/regime_delta_scatter.png"
+        - --title
+        - "decay_0.20 (retention 0.80)"
+    - id: delta_0_50
+      kind: script
+      cmd: scripts/analysis/regime_delta_summary.py
+      args:
+        - --reaction_log
+        - "{out_root}/decay-0.50/reaction_log.jsonl"
+        - --out_csv
+        - "{out_root}/decay-0.50/regime_deltas.csv"
+        - --plot
+        - "{out_root}/decay-0.50/regime_delta_scatter.png"
+        - --title
+        - "decay_0.50 (retention 0.50)"
+    - id: delta_0_80
+      kind: script
+      cmd: scripts/analysis/regime_delta_summary.py
+      args:
+        - --reaction_log
+        - "{out_root}/decay-0.80/reaction_log.jsonl"
+        - --out_csv
+        - "{out_root}/decay-0.80/regime_deltas.csv"
+        - --plot
+        - "{out_root}/decay-0.80/regime_delta_scatter.png"
+        - --title
+        - "decay_0.80 (retention 0.20)"
+    - id: decay_summary
+      kind: script
+      cmd: scripts/analysis/decay_sweep_summary.py
+      args:
+        - --out_root
+        - "{out_root}"
+        - --out_csv
+        - "{out_root}/decay_sweep_summary.csv"
+        - --plot
+        - "{out_root}/decay_sweep_summary.png"

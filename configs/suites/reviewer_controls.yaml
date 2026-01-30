@@ -1,0 +1,361 @@
+suite:
+  name: reviewer_controls
+  out_root: out/suites/{date}-{git}-reviewer
+  steps:
+    - id: self_baseline
+      kind: train
+      args:
+        config: config/train_shakespeare_char.py
+        overrides:
+          device: cpu
+          compile: False
+          max_iters: 2000
+          lr_decay_iters: 2000
+          block_size: 64
+          batch_size: 12
+          n_layer: 4
+          n_head: 4
+          n_embd: 128
+          dropout: 0.0
+          self_state_enabled: True
+          self_state_log_interval: 10
+          self_state_effect_interval: 50
+          out_dir: "{out_root}/self-baseline"
+          seed: 42
+          reaction_log: True
+    - id: vanilla_baseline
+      kind: train
+      args:
+        config: config/train_shakespeare_char.py
+        overrides:
+          device: cpu
+          compile: False
+          max_iters: 2000
+          lr_decay_iters: 2000
+          block_size: 64
+          batch_size: 12
+          n_layer: 4
+          n_head: 4
+          n_embd: 128
+          dropout: 0.0
+          self_state_enabled: False
+          out_dir: "{out_root}/vanilla-baseline"
+          seed: 42
+          reaction_log: True
+    - id: vanilla_regimes
+      kind: train
+      args:
+        config: config/train_shakespeare_char.py
+        overrides:
+          device: cpu
+          compile: False
+          max_iters: 2000
+          lr_decay_iters: 2000
+          block_size: 64
+          batch_size: 12
+          n_layer: 4
+          n_head: 4
+          n_embd: 128
+          dropout: 0.0
+          self_state_enabled: False
+          regime_config_path: configs/regimes/all_examples.json
+          out_dir: "{out_root}/vanilla-regimes"
+          seed: 42
+          reaction_log: True
+    - id: self_regimes
+      kind: train
+      args:
+        config: config/train_shakespeare_char.py
+        overrides:
+          device: cpu
+          compile: False
+          max_iters: 2000
+          lr_decay_iters: 2000
+          block_size: 64
+          batch_size: 12
+          n_layer: 4
+          n_head: 4
+          n_embd: 128
+          dropout: 0.0
+          self_state_enabled: True
+          self_state_log_interval: 10
+          self_state_effect_interval: 50
+          regime_config_path: configs/regimes/all_examples.json
+          out_dir: "{out_root}/self-regimes"
+          seed: 42
+          reaction_log: True
+    - id: fixed_bias_0_5
+      kind: train
+      args:
+        config: config/train_shakespeare_char.py
+        overrides:
+          device: cpu
+          compile: False
+          max_iters: 2000
+          lr_decay_iters: 2000
+          block_size: 64
+          batch_size: 12
+          n_layer: 4
+          n_head: 4
+          n_embd: 128
+          dropout: 0.0
+          self_state_enabled: True
+          self_state_init: random
+          self_state_init_norm_ref: "{out_root}/self-baseline/ckpt.pt"
+          self_state_init_scale: 0.5
+          self_state_decay: 0.0
+          self_state_log_interval: 10
+          self_state_effect_interval: 50
+          regime_config_path: configs/regimes/all_examples.json
+          out_dir: "{out_root}/fixed-bias-0.5"
+          seed: 42
+          reaction_log: True
+    - id: fixed_bias_1_0
+      kind: train
+      args:
+        config: config/train_shakespeare_char.py
+        overrides:
+          device: cpu
+          compile: False
+          max_iters: 2000
+          lr_decay_iters: 2000
+          block_size: 64
+          batch_size: 12
+          n_layer: 4
+          n_head: 4
+          n_embd: 128
+          dropout: 0.0
+          self_state_enabled: True
+          self_state_init: random
+          self_state_init_norm_ref: "{out_root}/self-baseline/ckpt.pt"
+          self_state_init_scale: 1.0
+          self_state_decay: 0.0
+          self_state_log_interval: 10
+          self_state_effect_interval: 50
+          regime_config_path: configs/regimes/all_examples.json
+          out_dir: "{out_root}/fixed-bias-1.0"
+          seed: 42
+          reaction_log: True
+    - id: fixed_bias_2_0
+      kind: train
+      args:
+        config: config/train_shakespeare_char.py
+        overrides:
+          device: cpu
+          compile: False
+          max_iters: 2000
+          lr_decay_iters: 2000
+          block_size: 64
+          batch_size: 12
+          n_layer: 4
+          n_head: 4
+          n_embd: 128
+          dropout: 0.0
+          self_state_enabled: True
+          self_state_init: random
+          self_state_init_norm_ref: "{out_root}/self-baseline/ckpt.pt"
+          self_state_init_scale: 2.0
+          self_state_decay: 0.0
+          self_state_log_interval: 10
+          self_state_effect_interval: 50
+          regime_config_path: configs/regimes/all_examples.json
+          out_dir: "{out_root}/fixed-bias-2.0"
+          seed: 42
+          reaction_log: True
+    - id: self_dim1_regimes
+      kind: train
+      args:
+        config: config/train_shakespeare_char.py
+        overrides:
+          device: cpu
+          compile: False
+          max_iters: 2000
+          lr_decay_iters: 2000
+          block_size: 64
+          batch_size: 12
+          n_layer: 4
+          n_head: 4
+          n_embd: 128
+          dropout: 0.0
+          self_state_enabled: True
+          self_state_dim: 1
+          self_state_log_interval: 10
+          self_state_effect_interval: 50
+          regime_config_path: configs/regimes/all_examples.json
+          out_dir: "{out_root}/self-dim1-regimes"
+          seed: 42
+          reaction_log: True
+    - id: frozen_test_random
+      kind: script
+      cmd: scripts/analysis/frozen_test_auto.py
+      args:
+        - --ckpt
+        - "{out_root}/self-baseline/ckpt.pt"
+        - --dataset
+        - shakespeare_char
+        - --device
+        - cpu
+        - --batch_size
+        - "32"
+        - --num_batches
+        - "5"
+        - --magnitude
+        - "0.3"
+        - --top_k
+        - "5"
+        - --num_random
+        - "50"
+    - id: delta_vanilla
+      kind: script
+      cmd: scripts/analysis/regime_delta_summary.py
+      args:
+        - --reaction_log
+        - "{out_root}/vanilla-regimes/reaction_log.jsonl"
+        - --out_csv
+        - "{out_root}/vanilla-regimes/regime_deltas.csv"
+        - --plot
+        - "{out_root}/vanilla-regimes/regime_delta_scatter.png"
+        - --title
+        - "vanilla"
+    - id: delta_self
+      kind: script
+      cmd: scripts/analysis/regime_delta_summary.py
+      args:
+        - --reaction_log
+        - "{out_root}/self-regimes/reaction_log.jsonl"
+        - --out_csv
+        - "{out_root}/self-regimes/regime_deltas.csv"
+        - --plot
+        - "{out_root}/self-regimes/regime_delta_scatter.png"
+        - --title
+        - "self_state"
+    - id: delta_fixed_0_5
+      kind: script
+      cmd: scripts/analysis/regime_delta_summary.py
+      args:
+        - --reaction_log
+        - "{out_root}/fixed-bias-0.5/reaction_log.jsonl"
+        - --out_csv
+        - "{out_root}/fixed-bias-0.5/regime_deltas.csv"
+        - --plot
+        - "{out_root}/fixed-bias-0.5/regime_delta_scatter.png"
+        - --title
+        - "fixed_bias_0.5x"
+    - id: delta_fixed_1_0
+      kind: script
+      cmd: scripts/analysis/regime_delta_summary.py
+      args:
+        - --reaction_log
+        - "{out_root}/fixed-bias-1.0/reaction_log.jsonl"
+        - --out_csv
+        - "{out_root}/fixed-bias-1.0/regime_deltas.csv"
+        - --plot
+        - "{out_root}/fixed-bias-1.0/regime_delta_scatter.png"
+        - --title
+        - "fixed_bias_1.0x"
+    - id: delta_fixed_2_0
+      kind: script
+      cmd: scripts/analysis/regime_delta_summary.py
+      args:
+        - --reaction_log
+        - "{out_root}/fixed-bias-2.0/reaction_log.jsonl"
+        - --out_csv
+        - "{out_root}/fixed-bias-2.0/regime_deltas.csv"
+        - --plot
+        - "{out_root}/fixed-bias-2.0/regime_delta_scatter.png"
+        - --title
+        - "fixed_bias_2.0x"
+    - id: delta_dim1
+      kind: script
+      cmd: scripts/analysis/regime_delta_summary.py
+      args:
+        - --reaction_log
+        - "{out_root}/self-dim1-regimes/reaction_log.jsonl"
+        - --out_csv
+        - "{out_root}/self-dim1-regimes/regime_deltas.csv"
+        - --plot
+        - "{out_root}/self-dim1-regimes/regime_delta_scatter.png"
+        - --title
+        - "self_dim1"
+    - id: sep_vanilla_common
+      kind: script
+      cmd: scripts/analysis/regime_separability.py
+      args:
+        - --reaction_log
+        - "{out_root}/vanilla-regimes/reaction_log.jsonl"
+        - --out_json
+        - "{out_root}/vanilla-regimes/regime_separability_common.json"
+        - --features
+        - "loss,stats_entropy,stats_top1_conf"
+        - --window
+        - "10"
+        - --kfold
+        - "5"
+    - id: sep_self_common
+      kind: script
+      cmd: scripts/analysis/regime_separability.py
+      args:
+        - --reaction_log
+        - "{out_root}/self-regimes/reaction_log.jsonl"
+        - --out_json
+        - "{out_root}/self-regimes/regime_separability_common.json"
+        - --features
+        - "loss,stats_entropy,stats_top1_conf"
+        - --window
+        - "10"
+        - --kfold
+        - "5"
+    - id: sep_self_aug
+      kind: script
+      cmd: scripts/analysis/regime_separability.py
+      args:
+        - --reaction_log
+        - "{out_root}/self-regimes/reaction_log.jsonl"
+        - --out_json
+        - "{out_root}/self-regimes/regime_separability_aug.json"
+        - --features
+        - "loss,stats_entropy,stats_top1_conf,self_drift,state_effect"
+        - --window
+        - "10"
+        - --kfold
+        - "5"
+    - id: mlp_analysis
+      kind: script
+      cmd: scripts/analysis/self_update_mlp_analysis.py
+      args:
+        - --ckpt
+        - "{out_root}/self-regimes/ckpt.pt"
+        - --reaction_log
+        - "{out_root}/self-regimes/reaction_log.jsonl"
+        - --out_dir
+        - "{out_root}/self-regimes/mlp_analysis"
+        - --probe
+        - --probe_task
+        - "regime_vs_baseline"
+        - --probe_features
+        - "hidden"
+    - id: mlp_probe_regime_id
+      kind: script
+      cmd: scripts/analysis/self_update_mlp_analysis.py
+      args:
+        - --ckpt
+        - "{out_root}/self-regimes/ckpt.pt"
+        - --reaction_log
+        - "{out_root}/self-regimes/reaction_log.jsonl"
+        - --out_dir
+        - "{out_root}/self-regimes/mlp_analysis"
+        - --probe
+        - --probe_task
+        - "regime_id"
+        - --probe_features
+        - "hidden"
+    - id: state_effect_monitor
+      kind: script
+      cmd: scripts/analysis/state_effect_monitoring.py
+      args:
+        - --reaction_log
+        - "{out_root}/self-regimes/reaction_log.jsonl"
+        - --out_json
+        - "{out_root}/self-regimes/state_effect_monitoring.json"
+        - --plot
+        - "{out_root}/self-regimes/state_effect_leadlag.png"
